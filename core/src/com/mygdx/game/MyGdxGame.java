@@ -47,6 +47,7 @@ public class MyGdxGame extends ApplicationAdapter {
     private DebugButton debug;
     private StateChanger stateChanger;
     Texture background;
+
     @Override
     public void create() {
         scrWidth = Gdx.graphics.getWidth();
@@ -91,7 +92,7 @@ public class MyGdxGame extends ApplicationAdapter {
 
     @Override
     public void render() {
-        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClearColor(1, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         updateGame();
         drawGame();
@@ -131,7 +132,7 @@ public class MyGdxGame extends ApplicationAdapter {
         }
 
         else if (state == GameState.IN_GAME) {
-            //for (Enemy enemy : enemies) {enemy.followPlayer(player);}
+            //for (Enemy enemy : enemies) {enemy.move();}
             if (stateChanger.isPressed()) stateChanger.action();
             if (Gdx.input.justTouched()) {
                 /*
@@ -159,9 +160,9 @@ public class MyGdxGame extends ApplicationAdapter {
             //remove bullet and enemy when they collide
             for (int j = 0; j < enemies.size(); j++) {
                 //player die
-                /*if (enemies.get(j).getBounds().overlaps(player.getBounds())) {
+                if (enemies.get(j).getBounds().overlaps(player.getBounds())) {
                     state = GameState.GAME_OVER;
-                }*/
+                }
                 //remove bullet and enemy when they collide
                 for (int i = 0; i < bullets.size(); i++)  {
                     if (enemies.get(j).getBounds().overlaps(bullets.get(i).getBounds()))  {
@@ -169,6 +170,14 @@ public class MyGdxGame extends ApplicationAdapter {
                         bullets.remove(i);
                     }
                 }
+            }
+            for (int i = 0; i < enemies.size(); i++) {
+                if(enemies.get(i).getPosition().y < 0) {
+                    enemies.remove(i);
+                }
+            }
+            if (enemies.size() == 0) {
+                state = GameState.GAME_OVER;
             }
         }
 
