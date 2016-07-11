@@ -28,7 +28,9 @@ public class Enemy {
         setSpeed(100);
     }
 
-    public void move() {}
+    public void move() {
+        setPosition(getPosition().x, getPosition().y-10);
+    }
 
     public void followPlayer(Player player) {
         float deltaTime = Gdx.graphics.getDeltaTime();

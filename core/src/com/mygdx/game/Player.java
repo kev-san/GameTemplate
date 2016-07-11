@@ -28,7 +28,7 @@ public class Player {
         velocity = new Vector2();
         accel = new Vector2();
         bounds = new Rectangle();
-        xFactor = -300; //play with this value
+        xFactor = -400; //play with this value
         //yFactor = -400; //play with this value
     }
 
@@ -41,19 +41,13 @@ public class Player {
 
         //bullet spawning
         Bullet bullet = new Bullet();
-        bullet.setPosition(getPosition().x - 30, getPosition().y);
+        bullet.setPosition(getPosition().x, getPosition().y);
         bullet.setVelocity(MathUtils.cos(rotation / 180 * MathUtils.PI) * bullet.getBulletSpeed(),
                 MathUtils.sin(rotation / 180 * MathUtils.PI) * bullet.getBulletSpeed());
         bullets.add(bullet);
-        //spawn second bullet
-        Bullet bullet2 = new Bullet();
-        bullet2.setPosition(getPosition().x + 30, getPosition().y);
-        bullet2.setVelocity(MathUtils.cos(rotation / 180 * MathUtils.PI) * bullet2.getBulletSpeed(),
-                MathUtils.sin(rotation / 180 * MathUtils.PI) * bullet2.getBulletSpeed());
-        bullets.add(bullet2);
     }
 
-    //EXPERIMENTAL SHIT
+    //EXPERIMENTAL S***
     public void shoot(Bullet bullet) {
         //ew math, don't need to touch this at all
         float deltaX = MyGdxGame.getTapPosition().x - getPosition().x;
@@ -81,10 +75,10 @@ public class Player {
     //make player wrap around screen
     public void wrap() {
         //left and right warping
-        if (getPosition().x > MyGdxGame.scrWidth) {
-            setPosition(0 - getBounds().getWidth(), getPosition().y);
-        } else if (getPosition().x < 0 - getBounds().getWidth()) {
-            setPosition(MyGdxGame.scrWidth, getPosition().y);
+        if (getPosition().x > MyGdxGame.scrWidth - sprite.getWidth()) {
+            setPosition(MyGdxGame.scrWidth - sprite.getWidth(), getPosition().y);
+        } else if (getPosition().x < 0 ) {
+            setPosition(0, getPosition().y);
         }
 
         //top and bottom warping
@@ -100,7 +94,7 @@ public class Player {
         setVelocity(0, 0);
     }
 
-    //turn on shit in here
+    //turn on s*** in here
     public void update() {
         setBounds();
         if (MyGdxGame.state == MyGdxGame.GameState.IN_GAME) {
