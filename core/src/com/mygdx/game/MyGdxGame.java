@@ -10,6 +10,7 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -45,7 +46,7 @@ public class MyGdxGame extends ApplicationAdapter {
 
     private DebugButton debug;
     private StateChanger stateChanger;
-
+    Texture background;
     @Override
     public void create() {
         scrWidth = Gdx.graphics.getWidth();
@@ -61,16 +62,16 @@ public class MyGdxGame extends ApplicationAdapter {
         //manager.load(new AssetDescriptor<Bullet>("Bullet.java", Bullet.class, new BulletLoader.BulletParameter()));
         =====EXPERIMENTAL SHIT=====
         */
-
+        background = new Texture("images/space background.jpeg");
         batch = new SpriteBatch();
         tap = new Vector3(); //location of tap
         font = new BitmapFont(Gdx.files.internal("fonts/arial.fnt"),
                 Gdx.files.internal("fonts/arial.png"), false);
-        music = Gdx.audio.newMusic(Gdx.files.internal("music/bgm1.mp3"));
+        music = Gdx.audio.newMusic(Gdx.files.internal("music/Deep space.mp3, sound effect.mp3"));
         music.setLooping(true);
         music.play();
         matchSound = Gdx.audio.newSound(Gdx.files.internal("sounds/matchStart.wav"));
-        shootSound = Gdx.audio.newSound(Gdx.files.internal("sounds/shootSound.wav"));
+        shootSound = Gdx.audio.newSound(Gdx.files.internal("sounds/Laser Blast Sound Effects (mp3cut.net).mp3"));
         layout = new GlyphLayout();
         player = new Player();
         bullets = new ArrayList<Bullet>();
@@ -90,7 +91,7 @@ public class MyGdxGame extends ApplicationAdapter {
 
     @Override
     public void render() {
-        Gdx.gl.glClearColor(1, 0, 0, 1);
+        Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         updateGame();
         drawGame();
@@ -130,7 +131,7 @@ public class MyGdxGame extends ApplicationAdapter {
         }
 
         else if (state == GameState.IN_GAME) {
-            for (Enemy enemy : enemies) {enemy.followPlayer(player);}
+            //for (Enemy enemy : enemies) {enemy.followPlayer(player);}
             if (stateChanger.isPressed()) stateChanger.action();
             if (Gdx.input.justTouched()) {
                 /*
@@ -158,9 +159,9 @@ public class MyGdxGame extends ApplicationAdapter {
             //remove bullet and enemy when they collide
             for (int j = 0; j < enemies.size(); j++) {
                 //player die
-                if (enemies.get(j).getBounds().overlaps(player.getBounds())) {
+                /*if (enemies.get(j).getBounds().overlaps(player.getBounds())) {
                     state = GameState.GAME_OVER;
-                }
+                }*/
                 //remove bullet and enemy when they collide
                 for (int i = 0; i < bullets.size(); i++)  {
                     if (enemies.get(j).getBounds().overlaps(bullets.get(i).getBounds()))  {
@@ -183,6 +184,7 @@ public class MyGdxGame extends ApplicationAdapter {
         camera.update();
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
+        batch.draw(background, camera.position.x - background.getWidth() / 2, 0);
         font.setColor(Color.WHITE);
         if (state == GameState.START) {
             //start shit here

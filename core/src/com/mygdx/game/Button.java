@@ -16,7 +16,7 @@ public class Button {
     protected Rectangle bounds;
 
     public Button(float x, float y) {
-        sprite = new Sprite(new Texture("images/badlogic.jpg"));
+        sprite = new Sprite(new Texture("images/Start-Button.png"));
         //sprite.setSize(YOUR WIDTH, YOUR HEIGHT);
         sprite.setScale(sprite.getWidth(), sprite.getHeight());
         position = new Vector2();
@@ -24,6 +24,7 @@ public class Button {
         bounds = new Rectangle();
         setBounds();
     }
+
 
     //make buttons do whatever you want here
     public void action() {}

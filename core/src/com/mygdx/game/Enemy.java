@@ -18,8 +18,8 @@ public class Enemy {
     private Rectangle bounds;
     public Sprite sprite;
     public Enemy(float x, float y) {
-        sprite = new Sprite(new Texture("images/badlogic.jpg"));
-        //sprite.setSize(YOUR WIDTH, YOUR HEIGHT);
+        sprite = new Sprite(new Texture("images/asteroids.png"));
+        sprite.setSize(400, 200);
         sprite.setScale(sprite.getWidth(), sprite.getHeight());
         position = new Vector2();
         setPosition(x, y);

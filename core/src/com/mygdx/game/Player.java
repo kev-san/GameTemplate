@@ -15,13 +15,13 @@ import java.util.ArrayList;
  * Created by Ryan on 7/4/2016.
  */
 public class Player {
-    private float xFactor, yFactor; //how much lean you need to move
+    private float xFactor; //yFactor; how much lean you need to move
     private Vector2 position, velocity, accel;
     private Rectangle bounds;
     public Sprite sprite;
 
     public Player() {
-        sprite = new Sprite(new Texture("images/badlogic.jpg"));
+        sprite = new Sprite(new Texture("images/Spaceship.png"));
         //sprite.setSize(YOUR WIDTH, YOUR HEIGHT);
         sprite.setScale(sprite.getWidth(), sprite.getHeight());
         position = new Vector2();
@@ -29,7 +29,7 @@ public class Player {
         accel = new Vector2();
         bounds = new Rectangle();
         xFactor = -300; //play with this value
-        yFactor = -400; //play with this value
+        //yFactor = -400; //play with this value
     }
 
     //shoot bullets from the player!
@@ -41,10 +41,16 @@ public class Player {
 
         //bullet spawning
         Bullet bullet = new Bullet();
-        bullet.setPosition(getPosition().x, getPosition().y);
+        bullet.setPosition(getPosition().x - 30, getPosition().y);
         bullet.setVelocity(MathUtils.cos(rotation / 180 * MathUtils.PI) * bullet.getBulletSpeed(),
                 MathUtils.sin(rotation / 180 * MathUtils.PI) * bullet.getBulletSpeed());
         bullets.add(bullet);
+        //spawn second bullet
+        Bullet bullet2 = new Bullet();
+        bullet2.setPosition(getPosition().x + 30, getPosition().y);
+        bullet2.setVelocity(MathUtils.cos(rotation / 180 * MathUtils.PI) * bullet2.getBulletSpeed(),
+                MathUtils.sin(rotation / 180 * MathUtils.PI) * bullet2.getBulletSpeed());
+        bullets.add(bullet2);
     }
 
     //EXPERIMENTAL SHIT
@@ -62,7 +68,7 @@ public class Player {
     //all movement code here
     public void tiltControls() {
         float deltaTime = Gdx.graphics.getDeltaTime();
-        setAccel(Gdx.input.getAccelerometerX(), Gdx.input.getAccelerometerY(), xFactor, yFactor);
+        setAccel(Gdx.input.getAccelerometerX(), Gdx.input.getAccelerometerY(), xFactor, 0);
 
         //makes movement feel snappier, comment out for sluggish turning
         if (Gdx.input.getAccelerometerX() > 0 || Gdx.input.getAccelerometerX() < 0) getVelocity().x = 0;
@@ -90,7 +96,7 @@ public class Player {
     }
 
     public void reset() {
-        setPosition(MyGdxGame.scrWidth / 2 - getBounds().getWidth() / 2, MyGdxGame.scrHeight / 2);
+        setPosition(MyGdxGame.scrWidth / 2 - getBounds().getWidth() / 2, MyGdxGame.scrHeight / 14);
         setVelocity(0, 0);
     }
 
