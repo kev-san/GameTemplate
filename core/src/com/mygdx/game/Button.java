@@ -25,7 +25,6 @@ public class Button {
         setBounds();
     }
 
-
     //make buttons do whatever you want here
     public void action() {}
 
