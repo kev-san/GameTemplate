@@ -1,7 +1,6 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.ApplicationAdapter;
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetManager;
@@ -24,16 +23,16 @@ import java.util.ArrayList;
 public class MyGdxGame extends ApplicationAdapter {
     protected static float scrWidth;
     protected static float scrHeight;
-    private static String end;
-    public static GameState state;
-    private Vector2 gravity;
 
-    protected enum GameState {START, IN_GAME, GAME_OVER}
+    protected enum GameState {START, SPACESHIP_SELECT, IN_GAME, GAME_OVER}
+    protected static GameState state;
+    protected enum Ship {SHIP1, SHIP2, SHIP3}
+    protected static Ship yourShip;
+    protected static Vector2 gravity;
 
+    private AssetManager manager; //EXPERIMENTAL S***
     protected static Preferences preferences;
     protected static int highScore;
-
-    private AssetManager manager; //EXPERIMENTAL SHIT
 
     private SpriteBatch batch;
     private static Vector3 tap; //holds the position of tap location
@@ -50,6 +49,7 @@ public class MyGdxGame extends ApplicationAdapter {
 
     private DebugButton debug;
     private StateChanger stateChanger;
+    private ChooseShip1 choose1;
     Texture background;
     private int score;
 
@@ -60,7 +60,7 @@ public class MyGdxGame extends ApplicationAdapter {
         gravity = new Vector2();
 
         preferences = new Preferences("Preferences");
-        //if theree are no high scores, then make one
+        //if there are no high scores, then make one
         if (preferences.getInteger("highScore", 0) == 0) {
             highScore = 0;
             preferences.putInteger("highScore", highScore);
@@ -69,24 +69,24 @@ public class MyGdxGame extends ApplicationAdapter {
 
 
         /*
-        =====EXPERIMENTAL SHIT=====
+        =====EXPERIMENTAL S***=====
         manager = new AssetManager();
         manager.setLoader(Bullet.class, new BulletLoader(new InternalFileHandleResolver()));
         manager.load("Bullet.java", Bullet.class);
         manager.finishLoading();
         //manager.load(new AssetDescriptor<Bullet>("Bullet.java", Bullet.class, new BulletLoader.BulletParameter()));
-        =====EXPERIMENTAL SHIT=====
+        =====EXPERIMENTAL S***=====
         */
         background = new Texture("images/space background.jpeg");
         batch = new SpriteBatch();
         tap = new Vector3(); //location of tap
         font = new BitmapFont(Gdx.files.internal("fonts/arial.fnt"),
                 Gdx.files.internal("fonts/arial.png"), false);
-        music = Gdx.audio.newMusic(Gdx.files.internal("music/Deep space.mp3, sound effect.mp3"));
+        music = Gdx.audio.newMusic(Gdx.files.internal("music/Deep space.mp3"));
         music.setLooping(true);
         music.play();
         matchSound = Gdx.audio.newSound(Gdx.files.internal("sounds/matchStart.wav"));
-        shootSound = Gdx.audio.newSound(Gdx.files.internal("sounds/Laser Blast Sound Effects (mp3cut.net).mp3"));
+        shootSound = Gdx.audio.newSound(Gdx.files.internal("sounds/Laser Blast Sound Effects.mp3"));
         layout = new GlyphLayout();
         player = new Player();
         bullets = new ArrayList<Bullet>();
@@ -100,7 +100,7 @@ public class MyGdxGame extends ApplicationAdapter {
 
         debug = new DebugButton(10, 10);
         stateChanger = new StateChanger(scrWidth / 2 + 10, 10);
-
+        choose1 = new ChooseShip1(scrWidth/3, scrHeight/2);
         resetGame();
     }
 
@@ -114,11 +114,12 @@ public class MyGdxGame extends ApplicationAdapter {
 
     private void resetGame() {
         state = GameState.START;
-        score = 0;
+        yourShip = Ship.SHIP1;
         gravity.set(0, -25);
         player.reset();
         bullets.clear();
         enemies.clear();
+        score = 0;
     }
 
     /*
@@ -135,13 +136,18 @@ public class MyGdxGame extends ApplicationAdapter {
         for (Enemy enemy : enemies) {
             enemy.update();
         }
+
         if (state == GameState.START) {
             if (debug.isPressed()) debug.action();
-            if (stateChanger.isPressed()) {
+            if (stateChanger.isPressed()) stateChanger.action();
+        }
+
+        else if (state == GameState.SPACESHIP_SELECT) {
+            if (choose1.isPressed()) {
                 matchSound.play();
                 for (int i = 0; i < Enemy.NUM_ENEMIES; i++)
-                    enemies.add(new Enemy((float)Math.random() * scrWidth, (float)(Math.random() * (scrHeight / 2)) + scrHeight / 2));
-                stateChanger.action();
+                    enemies.add(new Enemy((float)Math.random() * scrWidth, (float)Math.random() * scrHeight / 2 + scrHeight /2));
+                choose1.action();
             }
         }
 
@@ -150,10 +156,10 @@ public class MyGdxGame extends ApplicationAdapter {
             if (stateChanger.isPressed()) stateChanger.action();
             if (Gdx.input.justTouched()) {
                 /*
-                =====EXPERIMENTAL SHIT=====
+                =====EXPERIMENTAL S***=====
                 Bullet bullet = manager.get("Bullet.java");
                 bullets.add(bullet);
-                =====EXPERIMENTAL SHIT=====
+                =====EXPERIMENTAL S***=====
                 */
                 shootSound.play();
                 player.shoot(bullets);
@@ -171,6 +177,7 @@ public class MyGdxGame extends ApplicationAdapter {
                 }
             }
 
+            //remove bullet and enemy when they collide
             for (int j = 0; j < enemies.size(); j++) {
                 //player die
                 if (enemies.get(j).getBounds().overlaps(player.getBounds())) {
@@ -216,13 +223,15 @@ public class MyGdxGame extends ApplicationAdapter {
         batch.draw(background, camera.position.x - background.getWidth() / 2, 0);
         font.setColor(Color.WHITE);
         if (state == GameState.START) {
-            //start shit here
+            //start s*** here
+        } else if (state == GameState.SPACESHIP_SELECT) {
+            choose1.draw(batch);
         } else if (state == GameState.IN_GAME) {
             for (Bullet bullet : bullets) bullet.draw(batch);
             player.draw(batch);
             for (Enemy enemy : enemies) enemy.draw(batch);
         } else {
-            //gameover shit here
+            //gameover s*** here
         }
         batch.end();
 
@@ -240,6 +249,9 @@ public class MyGdxGame extends ApplicationAdapter {
             stateChanger.draw(batch);
             debug.draw(batch);
             layout.setText(font, "Tap to start!");
+            font.draw(batch, layout, scrWidth / 2 - layout.width / 2, scrHeight / 2);
+        } else if (state == GameState.SPACESHIP_SELECT) {
+            layout.setText(font, "Select a spaceship!");
             font.draw(batch, layout, scrWidth / 2 - layout.width / 2, scrHeight / 2);
         } else if (state == GameState.IN_GAME) {
             stateChanger.draw(batch);

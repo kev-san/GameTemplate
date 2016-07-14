@@ -21,7 +21,11 @@ public class Player {
     public Sprite sprite;
 
     public Player() {
-        sprite = new Sprite(new Texture("images/Spaceship.png"));
+        //if (MyGdxGame.yourShip == MyGdxGame.Ship.SHIP1) {
+            sprite = new Sprite(new Texture("images/Spaceship.png")); // change to "name of ship" for other ships
+        //}
+
+
         //sprite.setSize(YOUR WIDTH, YOUR HEIGHT);
         sprite.setScale(sprite.getWidth(), sprite.getHeight());
         position = new Vector2();
