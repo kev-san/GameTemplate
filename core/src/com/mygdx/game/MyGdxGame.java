@@ -21,10 +21,12 @@ import com.mygdx.game.assets.loaders.BulletLoader;
 import java.util.ArrayList;
 
 public class MyGdxGame extends ApplicationAdapter {
+    protected static final int NUM_LEVELS =12;
     protected static float scrWidth;
     protected static float scrHeight;
+    private ArrayList<LevelButton> LevelButtons;
 
-    protected enum GameState {START, SPACESHIP_SELECT, IN_GAME, GAME_OVER}
+    protected enum GameState {START,LEVEL_SELECT, SPACESHIP_SELECT, IN_GAME, GAME_OVER}
     protected static GameState state;
     protected enum Ship {SHIP1, SHIP2, SHIP3}
     protected static Ship yourShip;
@@ -44,11 +46,18 @@ public class MyGdxGame extends ApplicationAdapter {
     private Music music;
     private Sound shootSound, matchSound;
 
+
     public static OrthographicCamera camera; //camera is your game world camera
     public static OrthographicCamera uiCamera; //uiCamera is your heads-up display
 
+    private Level currentLevel;
+    private ArrayList<Level>levels;
+
+
+
     private DebugButton debug;
     private StateChanger stateChanger;
+    private ArrayList<LevelButton> levelButtons;
     private ChooseShip1 choose1;
     Texture background;
     private int score;
@@ -101,6 +110,25 @@ public class MyGdxGame extends ApplicationAdapter {
         debug = new DebugButton(10, 10);
         stateChanger = new StateChanger(scrWidth / 2 + 10, 10);
         choose1 = new ChooseShip1(scrWidth/3, scrHeight/2);
+        levelButtons = new ArrayList<LevelButton>();
+        levels = new ArrayList<Level>();
+        for (int i = 0; i < NUM_LEVELS; i++) {
+            levels.add(new Level(i + 1));
+        }
+        levelButtons.add(new LevelButton(0, scrHeight - 300, 1));
+        levelButtons.add(new LevelButton(250, scrHeight - 300, 2));
+        levelButtons.add(new LevelButton(500, scrHeight - 300, 3));
+        levelButtons.add(new LevelButton(0, scrHeight - 600, 4));
+        levelButtons.add(new LevelButton(250, scrHeight - 600, 5));
+        levelButtons.add(new LevelButton(500, scrHeight - 600, 6));
+        levelButtons.add(new LevelButton(0, scrHeight - 900,7));
+        levelButtons.add(new LevelButton(250, scrHeight - 900, 8));
+        levelButtons.add(new LevelButton(500, scrHeight - 900, 9));
+        levelButtons.add(new LevelButton(0, scrHeight - 1200, 10));
+        levelButtons.add(new LevelButton(250, scrHeight - 1200, 11));
+        levelButtons.add(new LevelButton(500, scrHeight - 1200, 12));
+
+        currentLevel = new Level(0);
         resetGame();
     }
 
@@ -133,26 +161,35 @@ public class MyGdxGame extends ApplicationAdapter {
 
     private void updateGame() {
         player.update();
-        for (Enemy enemy : enemies) {
-            enemy.update();
-        }
 
         if (state == GameState.START) {
             if (debug.isPressed()) debug.action();
             if (stateChanger.isPressed()) stateChanger.action();
         }
 
+        else if (state == GameState.LEVEL_SELECT) {
+            for (int i = 0; i < NUM_LEVELS; i++) {
+                if (levelButtons.get(i).isPressed()) {
+                    currentLevel = levels.get(i); //current level is whatever you tapped
+                    enemies = currentLevel.getEnemies();
+                    levelButtons.get(i).pressedAction();
+                }
+            }
+        }
+
+
         else if (state == GameState.SPACESHIP_SELECT) {
             if (choose1.isPressed()) {
                 matchSound.play();
-                for (int i = 0; i < Enemy.NUM_ENEMIES; i++)
-                    enemies.add(new Enemy((float)Math.random() * scrWidth, (float)Math.random() * scrHeight / 2 + scrHeight /2));
                 choose1.action();
             }
         }
 
         else if (state == GameState.IN_GAME) {
-            for (Enemy enemy : enemies) {enemy.move();}
+            for (Enemy enemy : enemies) {
+                enemy.update();
+                enemy.move();
+            }
             if (stateChanger.isPressed()) stateChanger.action();
             if (Gdx.input.justTouched()) {
                 /*
@@ -224,9 +261,19 @@ public class MyGdxGame extends ApplicationAdapter {
         font.setColor(Color.WHITE);
         if (state == GameState.START) {
             //start s*** here
-        } else if (state == GameState.SPACESHIP_SELECT) {
+        }
+
+        else if (state == GameState.LEVEL_SELECT) {
+            for (LevelButton lvlBtn : levelButtons) {
+                lvlBtn.draw(batch, font);
+            }
+        }
+
+        else if (state == GameState.SPACESHIP_SELECT) {
             choose1.draw(batch);
-        } else if (state == GameState.IN_GAME) {
+        }
+
+        else if (state == GameState.IN_GAME) {
             for (Bullet bullet : bullets) bullet.draw(batch);
             player.draw(batch);
             for (Enemy enemy : enemies) enemy.draw(batch);
@@ -250,6 +297,8 @@ public class MyGdxGame extends ApplicationAdapter {
             debug.draw(batch);
             layout.setText(font, "Tap to start!");
             font.draw(batch, layout, scrWidth / 2 - layout.width / 2, scrHeight / 2);
+        } else if (state == GameState.LEVEL_SELECT) {
+            // no text
         } else if (state == GameState.SPACESHIP_SELECT) {
             layout.setText(font, "Select a spaceship!");
             font.draw(batch, layout, scrWidth / 2 - layout.width / 2, scrHeight / 2);
