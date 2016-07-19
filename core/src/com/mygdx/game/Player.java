@@ -18,14 +18,17 @@ public class Player {
     private float xFactor; //yFactor; how much lean you need to move
     private Vector2 position, velocity, accel;
     private Rectangle bounds;
-    public Sprite sprite;
+    public Sprite sprite, sprite2, sprite3, sprite4, sprite5, sprite6, sprite7, sprite8;
 
     public Player() {
-        //if (MyGdxGame.yourShip == MyGdxGame.Ship.SHIP1) {
-            sprite = new Sprite(new Texture("images/Spaceship.png")); // change to "name of ship" for other ships
-        //}
-
-
+        sprite = new Sprite(new Texture("images/Spaceship.png"));
+        sprite2 = new Sprite(new Texture("images/blue spaceship.png"));
+        sprite3 = new Sprite(new Texture("images/piq_109065.png"));
+        sprite4 = new Sprite(new Texture("images/piqship.png"));
+        sprite5 = new Sprite(new Texture("images/space shooter small.png"));
+        sprite6 = new Sprite(new Texture("images/zero lines.png"));
+        sprite7 = new Sprite(new Texture("images/spaceship1.png"));
+        sprite8 = new Sprite(new Texture("images/spaceship3.png"));
         //sprite.setSize(YOUR WIDTH, YOUR HEIGHT);
         sprite.setScale(sprite.getWidth(), sprite.getHeight());
         position = new Vector2();
@@ -36,6 +39,37 @@ public class Player {
         //yFactor = -400; //play with this value
     }
 
+    //character select
+    public void editSprite(int i) {
+        switch (i) {
+            case 1:
+                sprite.set(sprite);
+                break;
+            case 2:
+                sprite.set(sprite2);
+                break;
+            case 3:
+                sprite.set(sprite3);
+                break;
+            case 4:
+                sprite.set(sprite4);
+                break;
+            case 5:
+                sprite.set(sprite5);
+                break;
+            case 6:
+                sprite.set(sprite6);
+                break;
+            case 7:
+                sprite.set(sprite7);
+                break;
+            case 8:
+                sprite.set(sprite8);
+                break;
+            default:
+                break;
+        }
+    }
     //shoot bullets from the player!
     public void shoot(ArrayList<Bullet> bullets) {
         //ew math, don't need to touch this at all
