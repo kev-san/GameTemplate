@@ -19,6 +19,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.mygdx.game.assets.loaders.BulletLoader;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class MyGdxGame extends ApplicationAdapter {
     protected static final int NUM_LEVELS =12;
@@ -51,6 +52,9 @@ public class MyGdxGame extends ApplicationAdapter {
 
     private Level currentLevel;
     private ArrayList<Level>levels;
+
+    private Iterator<Bullet> bulletIterator;
+    private Iterator<Enemy> enemyIterator;
 
 
 
@@ -106,6 +110,8 @@ public class MyGdxGame extends ApplicationAdapter {
         player = new Player();
         bullets = new ArrayList<Bullet>();
         enemies = new ArrayList<Enemy>();
+        bulletIterator = bullets.iterator();
+        enemyIterator = enemies.iterator();
 
         camera = new OrthographicCamera();
         camera.setToOrtho(false, scrWidth, scrHeight);
@@ -271,25 +277,35 @@ public class MyGdxGame extends ApplicationAdapter {
             }
 
             //remove bullet and enemy when they collide
-            for (int j = 0; j < enemies.size(); j++) {
+            enemyIterator = enemies.iterator();
+            while(enemyIterator.hasNext()) {
+                Enemy enemy = enemyIterator.next();
+
                 //player die
-                if (enemies.get(j).getBounds().overlaps(player.getBounds())) {
+                if (enemy.getBounds().overlaps(player.getBounds())) {
                     state = GameState.GAME_OVER;
                 }
+
+                // remove enemy when off screen
+                if(enemy.getPosition().y < 0) {
+                    enemyIterator.remove();
+                    break;
+                }
+
+                bulletIterator = bullets.iterator();
                 //remove bullet and enemy when they collide
-                for (int i = 0; i < bullets.size(); i++)  {
-                    if (enemies.get(j).getBounds().overlaps(bullets.get(i).getBounds()))  {
-                        enemies.remove(j);
-                        bullets.remove(i);
+                while(bulletIterator.hasNext())  {
+                    Bullet bullet = bulletIterator.next();
+                    if (enemy.getBounds().overlaps(bullet.getBounds()))  {
+                        enemyIterator.remove();
+                        bulletIterator.remove();
                         score = score + 1;
+                        break;
                     }
                 }
             }
-            for (int i = 0; i < enemies.size(); i++) {
-                if(enemies.get(i).getPosition().y < 0) {
-                    enemies.remove(i);
-                }
-            }
+
+            // end game when no more enemies
             if (enemies.size() == 0) {
                 state = GameState.GAME_OVER;
             }
@@ -308,7 +324,7 @@ public class MyGdxGame extends ApplicationAdapter {
         }
     }
 
-	private void drawGame() {
+    private void drawGame() {
         //game world camera
         camera.update();
         batch.setProjectionMatrix(camera.combined);
