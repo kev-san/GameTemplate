@@ -22,7 +22,7 @@ public class LevelButton extends Button {
     }
 
     public void pressedAction() {
-        MyGdxGame.state = MyGdxGame.GameState.SPACESHIP_SELECT;
+        MyGdxGame.state = MyGdxGame.GameState.IN_GAME;
     }
 
     public void draw(SpriteBatch batch, BitmapFont font) {

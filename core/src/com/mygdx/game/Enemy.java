@@ -30,17 +30,17 @@ public class Enemy {
     }
 
     public Enemy(float x, float y) {
-        sprite.setSize(100, 100);
+        sprite.setSize(MyGdxGame.scrWidth/10, MyGdxGame.scrWidth/10);
         sprite.setScale(sprite.getWidth(), sprite.getHeight());
         position = new Vector2();
         setPosition(x, y);
         velocity = new Vector2();
         bounds = new Rectangle();
-        setSpeed(100);
+        setSpeed(MyGdxGame.scrHeight/150);
     }
 
     public void move() {
-        setPosition(getPosition().x, getPosition().y-10);
+        setPosition(getPosition().x, getPosition().y-getSpeed());
     }
 
     public void followPlayer(Player player) {
