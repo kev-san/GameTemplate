@@ -78,10 +78,6 @@ public class Level {
 
         }
 
-
-
-
                 return enemies;
         }
     }
-

@@ -56,8 +56,6 @@ public class MyGdxGame extends ApplicationAdapter {
     private Iterator<Bullet> bulletIterator;
     private Iterator<Enemy> enemyIterator;
 
-
-
     private DebugButton debug;
     private StateChanger stateChanger;
     private ArrayList<LevelButton> levelButtons;
@@ -79,13 +77,13 @@ public class MyGdxGame extends ApplicationAdapter {
         gravity = new Vector2();
 
         preferences = new Preferences("Preferences");
+        preferences.flush();
         //if there are no high scores, then make one
         if (preferences.getInteger("highScore", 0) == 0) {
             highScore = 0;
             preferences.putInteger("highScore", highScore);
         } else
             highScore = preferences.getInteger("highScore", 0); //set highScore to saved value
-
 
         /*
         =====EXPERIMENTAL S***=====
@@ -130,24 +128,23 @@ public class MyGdxGame extends ApplicationAdapter {
         choose7 = new ChooseShip7(scrWidth/5, scrHeight/9);
         choose8 = new ChooseShip8(3.5f * scrWidth/5, scrHeight/9);
 
-        choose1 = new ChooseShip1(scrWidth/3, scrHeight/2);
         levelButtons = new ArrayList<LevelButton>();
         levels = new ArrayList<Level>();
         for (int i = 0; i < NUM_LEVELS; i++) {
             levels.add(new Level(i + 1));
         }
-        levelButtons.add(new LevelButton(0, scrHeight - 300, 1));
-        levelButtons.add(new LevelButton(250, scrHeight - 300, 2));
-        levelButtons.add(new LevelButton(500, scrHeight - 300, 3));
-        levelButtons.add(new LevelButton(0, scrHeight - 600, 4));
-        levelButtons.add(new LevelButton(250, scrHeight - 600, 5));
-        levelButtons.add(new LevelButton(500, scrHeight - 600, 6));
-        levelButtons.add(new LevelButton(0, scrHeight - 900,7));
-        levelButtons.add(new LevelButton(250, scrHeight - 900, 8));
-        levelButtons.add(new LevelButton(500, scrHeight - 900, 9));
-        levelButtons.add(new LevelButton(0, scrHeight - 1200, 10));
-        levelButtons.add(new LevelButton(250, scrHeight - 1200, 11));
-        levelButtons.add(new LevelButton(500, scrHeight - 1200, 12));
+        levelButtons.add(new LevelButton(scrWidth / 7, 7 * scrHeight / 9, 1));
+        levelButtons.add(new LevelButton(3 * scrWidth / 7, 7 * scrHeight / 9, 2));
+        levelButtons.add(new LevelButton(5 * scrWidth / 7, 7 * scrHeight / 9, 3));
+        levelButtons.add(new LevelButton(scrWidth / 7, 5 * scrHeight / 9, 4));
+        levelButtons.add(new LevelButton(3 * scrWidth / 7, 5 * scrHeight / 9, 5));
+        levelButtons.add(new LevelButton(5 * scrWidth / 7, 5 * scrHeight / 9, 6));
+        levelButtons.add(new LevelButton(scrWidth / 7, 3 * scrHeight / 9, 7));
+        levelButtons.add(new LevelButton(3 * scrWidth / 7, 3 * scrHeight / 9, 8));
+        levelButtons.add(new LevelButton(5 * scrWidth / 7, 3 * scrHeight / 9, 9));
+        levelButtons.add(new LevelButton(scrWidth / 7, scrHeight / 9, 10));
+        levelButtons.add(new LevelButton(3 * scrWidth / 7, scrHeight / 9, 11));
+        levelButtons.add(new LevelButton(5 * scrWidth / 7, scrHeight / 9, 12));
 
         currentLevel = new Level(0);
         resetGame();
@@ -169,6 +166,7 @@ public class MyGdxGame extends ApplicationAdapter {
         bullets.clear();
         enemies.clear();
         score = 0;
+        //preferences.clear();
     }
 
     /*
@@ -184,7 +182,7 @@ public class MyGdxGame extends ApplicationAdapter {
         player.update();
 
         if (state == GameState.START) {
-            if (debug.isPressed()) debug.action();
+            //if (debug.isPressed()) debug.action();
             if (stateChanger.isPressed()) stateChanger.action();
         }
 
@@ -197,7 +195,6 @@ public class MyGdxGame extends ApplicationAdapter {
                 }
             }
         }
-
 
         else if (state == GameState.SPACESHIP_SELECT) {
             if (choose1.isPressed()) {
@@ -252,14 +249,8 @@ public class MyGdxGame extends ApplicationAdapter {
                 enemy.update();
                 enemy.move();
             }
-            if (stateChanger.isPressed()) stateChanger.action();
+            //if (stateChanger.isPressed()) stateChanger.action();
             if (Gdx.input.justTouched()) {
-                /*
-                =====EXPERIMENTAL S***=====
-                Bullet bullet = manager.get("Bullet.java");
-                bullets.add(bullet);
-                =====EXPERIMENTAL S***=====
-                */
                 shootSound.play();
                 player.shoot(bullets);
             }
@@ -371,7 +362,7 @@ public class MyGdxGame extends ApplicationAdapter {
 
         if (state == GameState.START) {
             stateChanger.draw(batch);
-            debug.draw(batch);
+            //debug.draw(batch);
             layout.setText(font, "Tap to start!");
             font.draw(batch, layout, scrWidth / 2 - layout.width / 2, scrHeight / 2);
         } else if (state == GameState.LEVEL_SELECT) {
@@ -380,7 +371,7 @@ public class MyGdxGame extends ApplicationAdapter {
             layout.setText(font, "Select a spaceship!");
             font.draw(batch, layout, scrWidth / 2 - layout.width / 2, scrHeight / 2);
         } else if (state == GameState.IN_GAME) {
-            stateChanger.draw(batch);
+            //stateChanger.draw(batch);
             font.draw(batch, "Score: " + score, 20, MyGdxGame.scrHeight - 50);
             font.draw(batch, "High Score: " + highScore , 20, MyGdxGame.scrHeight - 100);
         } else { //state == GameState.GAME_OVER

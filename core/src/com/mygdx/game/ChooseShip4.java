@@ -16,6 +16,6 @@ public class ChooseShip4 extends Button {
     @Override
     public void action() {
         MyGdxGame.yourShip = MyGdxGame.Ship.SHIP4;
-        MyGdxGame.state = MyGdxGame.GameState.IN_GAME;
+        MyGdxGame.state = MyGdxGame.GameState.LEVEL_SELECT;
     }
 }
