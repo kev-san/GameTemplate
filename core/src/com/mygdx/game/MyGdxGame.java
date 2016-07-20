@@ -25,7 +25,6 @@ public class MyGdxGame extends ApplicationAdapter {
     protected static final int NUM_LEVELS =12;
     protected static float scrWidth;
     protected static float scrHeight;
-    private ArrayList<LevelButton> LevelButtons;
 
     protected enum GameState {START,LEVEL_SELECT, SPACESHIP_SELECT, IN_GAME, GAME_OVER}
     protected static GameState state;
@@ -33,14 +32,13 @@ public class MyGdxGame extends ApplicationAdapter {
     protected static Ship yourShip;
     protected static Vector2 gravity;
 
-    private AssetManager manager; //EXPERIMENTAL S***
     protected static Preferences preferences;
     protected static int highScore;
 
     private SpriteBatch batch;
     private static Vector3 tap; //holds the position of tap location
     private BitmapFont font;
-    private GlyphLayout layout;
+    private GlyphLayout layout, endMessage;
     private Player player;
     private ArrayList<Bullet> bullets;
     private ArrayList<Enemy> enemies;
@@ -85,15 +83,6 @@ public class MyGdxGame extends ApplicationAdapter {
         } else
             highScore = preferences.getInteger("highScore", 0); //set highScore to saved value
 
-        /*
-        =====EXPERIMENTAL S***=====
-        manager = new AssetManager();
-        manager.setLoader(Bullet.class, new BulletLoader(new InternalFileHandleResolver()));
-        manager.load("Bullet.java", Bullet.class);
-        manager.finishLoading();
-        //manager.load(new AssetDescriptor<Bullet>("Bullet.java", Bullet.class, new BulletLoader.BulletParameter()));
-        =====EXPERIMENTAL S***=====
-        */
         background = new Texture("images/space background.jpeg");
         batch = new SpriteBatch();
         tap = new Vector3(); //location of tap
@@ -105,6 +94,7 @@ public class MyGdxGame extends ApplicationAdapter {
         matchSound = Gdx.audio.newSound(Gdx.files.internal("sounds/matchStart.wav"));
         shootSound = Gdx.audio.newSound(Gdx.files.internal("sounds/Laser Blast Sound Effects.mp3"));
         layout = new GlyphLayout();
+        endMessage = new GlyphLayout();
         player = new Player();
         bullets = new ArrayList<Bullet>();
         enemies = new ArrayList<Enemy>();
@@ -237,11 +227,6 @@ public class MyGdxGame extends ApplicationAdapter {
                 player.editSprite(8);
                 matchSound.play();
             }
-
-            if (Gdx.input.justTouched()) {
-                for (int i = 0; i < Enemy.NUM_ENEMIES; i++)
-                    enemies.add(new Enemy((float)Math.random() * scrWidth, (float)Math.random() * scrHeight / 2 + scrHeight /2));
-            }
         }
 
         else if (state == GameState.IN_GAME) {
@@ -274,18 +259,19 @@ public class MyGdxGame extends ApplicationAdapter {
 
                 //player die
                 if (enemy.getBounds().overlaps(player.getBounds())) {
+                    endMessage.setText(font, "You got nailed by an asteroid!");
                     state = GameState.GAME_OVER;
                 }
 
                 // remove enemy when off screen
-                if(enemy.getPosition().y < 0) {
+                if(enemy.getPosition().y < 0 - (scrHeight / 4)) {
                     enemyIterator.remove();
                     break;
                 }
 
                 bulletIterator = bullets.iterator();
                 //remove bullet and enemy when they collide
-                while(bulletIterator.hasNext())  {
+                while(bulletIterator.hasNext()) {
                     Bullet bullet = bulletIterator.next();
                     if (enemy.getBounds().overlaps(bullet.getBounds()))  {
                         enemyIterator.remove();
@@ -296,8 +282,9 @@ public class MyGdxGame extends ApplicationAdapter {
                 }
             }
 
-            // end game when no more enemies
+            //end game when no more enemies
             if (enemies.size() == 0) {
+                endMessage.setText(font, "You survived the asteroid cluster!");
                 state = GameState.GAME_OVER;
             }
         }
@@ -355,9 +342,9 @@ public class MyGdxGame extends ApplicationAdapter {
         batch.begin();
 
         if (debug.debug) {
-            font.draw(batch, "Game state: " + MyGdxGame.state, 20, MyGdxGame.scrHeight - 20);
-            font.draw(batch, "Bullet count: " + bullets.size(), 20, MyGdxGame.scrHeight - 70);
-            font.draw(batch, "Number of enemies: " + enemies.size(), 20, MyGdxGame.scrHeight - 120);
+            font.draw(batch, "Game state: " + MyGdxGame.state, 20, scrHeight - 20);
+            font.draw(batch, "Bullet count: " + bullets.size(), 20, scrHeight - 70);
+            font.draw(batch, "Number of enemies: " + enemies.size(), 20, scrHeight - 120);
         }
 
         if (state == GameState.START) {
@@ -375,8 +362,9 @@ public class MyGdxGame extends ApplicationAdapter {
             font.draw(batch, "Score: " + score, 20, MyGdxGame.scrHeight - 50);
             font.draw(batch, "High Score: " + highScore , 20, MyGdxGame.scrHeight - 100);
         } else { //state == GameState.GAME_OVER
+            font.draw(batch, endMessage,scrWidth / 2 - endMessage.width / 2, scrHeight / 2);
             layout.setText(font, "Tap to restart!");
-            font.draw(batch, layout, scrWidth / 2 - layout.width / 2, Gdx.graphics.getHeight() / 2);
+            font.draw(batch, layout, scrWidth / 2 - layout.width / 2, scrHeight / 2 - 1.5f * layout.height);
         }
         batch.end();
     }
