@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 public class MyGdxGame extends ApplicationAdapter {
-    protected static final int NUM_LEVELS =12;
+    protected static final int NUM_LEVELS = 12;
     protected static float scrWidth;
     protected static float scrHeight;
 
@@ -83,7 +83,7 @@ public class MyGdxGame extends ApplicationAdapter {
         } else
             highScore = preferences.getInteger("highScore", 0); //set highScore to saved value
 
-        background = new Texture("images/space background.jpeg");
+        background = new Texture("images/space background.jpg");
         batch = new SpriteBatch();
         tap = new Vector3(); //location of tap
         font = new BitmapFont(Gdx.files.internal("fonts/arial.fnt"),
@@ -92,7 +92,7 @@ public class MyGdxGame extends ApplicationAdapter {
         music.setLooping(true);
         music.play();
         matchSound = Gdx.audio.newSound(Gdx.files.internal("sounds/matchStart.wav"));
-        shootSound = Gdx.audio.newSound(Gdx.files.internal("sounds/Laser Blast Sound Effects.mp3"));
+        shootSound = Gdx.audio.newSound(Gdx.files.internal("sounds/Laser Blast Sound Effects.wav"));
         layout = new GlyphLayout();
         endMessage = new GlyphLayout();
         player = new Player();
@@ -173,7 +173,7 @@ public class MyGdxGame extends ApplicationAdapter {
 
         if (state == GameState.START) {
             //if (debug.isPressed()) debug.action();
-            if (stateChanger.isPressed()) stateChanger.action();
+            if (Gdx.input.isTouched()) stateChanger.action();
         }
 
         else if (state == GameState.LEVEL_SELECT) {
@@ -259,7 +259,7 @@ public class MyGdxGame extends ApplicationAdapter {
 
                 //player die
                 if (enemy.getBounds().overlaps(player.getBounds())) {
-                    endMessage.setText(font, "You got nailed by an asteroid!");
+                    endMessage.setText(font, "You got nailed\nby an asteroid!");
                     state = GameState.GAME_OVER;
                 }
 
@@ -284,7 +284,7 @@ public class MyGdxGame extends ApplicationAdapter {
 
             //end game when no more enemies
             if (enemies.size() == 0) {
-                endMessage.setText(font, "You survived the asteroid cluster!");
+                endMessage.setText(font, "You survived the\nasteroid cluster!");
                 state = GameState.GAME_OVER;
             }
         }
@@ -348,7 +348,7 @@ public class MyGdxGame extends ApplicationAdapter {
         }
 
         if (state == GameState.START) {
-            stateChanger.draw(batch);
+            //stateChanger.draw(batch);
             //debug.draw(batch);
             layout.setText(font, "Tap to start!");
             font.draw(batch, layout, scrWidth / 2 - layout.width / 2, scrHeight / 2);
@@ -364,7 +364,7 @@ public class MyGdxGame extends ApplicationAdapter {
         } else { //state == GameState.GAME_OVER
             font.draw(batch, endMessage,scrWidth / 2 - endMessage.width / 2, scrHeight / 2);
             layout.setText(font, "Tap to restart!");
-            font.draw(batch, layout, scrWidth / 2 - layout.width / 2, scrHeight / 2 - 1.5f * layout.height);
+            font.draw(batch, layout, scrWidth / 2 - layout.width / 2, scrHeight / 2 - 5f * layout.height);
         }
         batch.end();
     }
