@@ -16,7 +16,7 @@ public class LevelButton extends Button {
         super(x, y);
         level = number;
         sprite = new Sprite(new Texture("images/mario blank space.png"));
-        //sprite.setSize(YOUR WIDTH, YOUR HEIGHT);
+        sprite.setSize(MyGdxGame.scrWidth / 6, MyGdxGame.scrHeight / 9);
         sprite.setScale(sprite.getWidth(), sprite.getHeight());
         setBounds();
     }
