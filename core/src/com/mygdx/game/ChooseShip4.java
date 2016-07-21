@@ -10,6 +10,7 @@ public class ChooseShip4 extends Button {
     public ChooseShip4(float x, float y) {
         super(x, y);
         sprite = new Sprite(new Texture("images/piqship.png"));
+        sprite.setSize(MyGdxGame.scrWidth/8, MyGdxGame.scrWidth/8);
         setBounds();
     }
 

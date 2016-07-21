@@ -29,7 +29,7 @@ public class Bullet {
     public Bullet() {
         sprite = new Sprite(manager.get("images/laser.png", Texture.class));
         //sprite = new Sprite(new Texture("badlogic.jpg"));
-        //sprite.setSize(YOUR WIDTH, YOUR HEIGHT);
+        sprite.setSize(MyGdxGame.scrWidth/32, MyGdxGame.scrWidth/10);
         sprite.setScale(sprite.getWidth(), sprite.getHeight());
         position = new Vector2();
         velocity = new Vector2();
