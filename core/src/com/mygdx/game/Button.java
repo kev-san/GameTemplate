@@ -25,8 +25,8 @@ public class Button {
         setBounds();
     }
 
-
     //make buttons do whatever you want here
+
     public void action() {}
 
     public boolean isPressed() {return (Gdx.input.justTouched() && this.getBounds().contains(MyGdxGame.getTapPosition().x, MyGdxGame.getTapPosition().y));}

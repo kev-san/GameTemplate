@@ -1,6 +1,7 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -12,24 +13,34 @@ import com.badlogic.gdx.math.Vector2;
  * Created by Ryan on 7/5/2016.
  */
 public class Enemy {
-    protected static final int NUM_ENEMIES = 5;
+    protected static final int NUM_ENEMIES = 130;
+    private static AssetManager manager;
     private float speed;
     private Vector2 position, velocity;
     private Rectangle bounds;
-    public Sprite sprite;
-    public Enemy(float x, float y) {
+    public static Sprite sprite;
+
+    static {
+        //memory management--loading image into manager
+        String image= "image/asteroids.png";
+        manager = new AssetManager();
+        manager.load("images/asteroids.png", Texture.class);
+        manager.finishLoading();
         sprite = new Sprite(new Texture("images/asteroids.png"));
-        sprite.setSize(400, 200);
+    }
+
+    public Enemy(float x, float y) {
+        sprite.setSize(MyGdxGame.scrWidth/10, MyGdxGame.scrWidth/10);
         sprite.setScale(sprite.getWidth(), sprite.getHeight());
         position = new Vector2();
         setPosition(x, y);
         velocity = new Vector2();
         bounds = new Rectangle();
-        setSpeed(100);
+        setSpeed(MyGdxGame.scrHeight/150);
     }
 
     public void move() {
-        setPosition(getPosition().x, getPosition().y-10);
+        setPosition(getPosition().x, getPosition().y-getSpeed());
     }
 
     public void followPlayer(Player player) {

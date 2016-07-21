@@ -13,27 +13,28 @@ import com.badlogic.gdx.math.Vector2;
  * Created by Ryan on 7/4/2016.
  */
 public class Bullet {
-    private AssetManager manager;
+    private static AssetManager manager;
     private float bulletSpeed;
     private Vector2 position, velocity;
     private Rectangle bounds;
     public Sprite sprite;
 
-    public Bullet() {
-        //memory management -- loading image into manager
-        String image = "images/laser.png";
+    static {
+    //memory management--loading image into manager
+        String image= "image/laser.png";
         manager = new AssetManager();
         manager.load("images/laser.png", Texture.class);
         manager.finishLoading();
+    }
+    public Bullet() {
         sprite = new Sprite(manager.get("images/laser.png", Texture.class));
-
         //sprite = new Sprite(new Texture("badlogic.jpg"));
         //sprite.setSize(YOUR WIDTH, YOUR HEIGHT);
         sprite.setScale(sprite.getWidth(), sprite.getHeight());
         position = new Vector2();
         velocity = new Vector2();
         bounds = new Rectangle();
-        setBulletSpeed(2000);
+        setBulletSpeed(1000);
     }
 
     public void update() {
