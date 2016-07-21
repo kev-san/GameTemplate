@@ -70,6 +70,8 @@ public class Player {
             default:
                 break;
         }
+        sprite.setSize(2 * MyGdxGame.scrHeight/27, 2 * MyGdxGame.scrHeight/27);
+
     }
     //shoot bullets from the player!
     public void shoot(ArrayList<Bullet> bullets) {

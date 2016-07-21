@@ -30,7 +30,7 @@ public class Enemy {
     }
 
     public Enemy(float x, float y) {
-        sprite.setSize(MyGdxGame.scrWidth/10, MyGdxGame.scrWidth/10);
+        sprite.setSize(MyGdxGame.scrWidth/8, MyGdxGame.scrWidth/8);
         sprite.setScale(sprite.getWidth(), sprite.getHeight());
         position = new Vector2();
         setPosition(x, y);
